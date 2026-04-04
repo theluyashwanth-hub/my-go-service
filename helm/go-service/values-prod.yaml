@@ -1,0 +1,9 @@
+replicaCount: 2
+image:
+  tag: v1.0.0
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+env:
+  LOG_LEVEL: "info"

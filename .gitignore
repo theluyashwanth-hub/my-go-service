@@ -1,0 +1,5 @@
+*.tgz
+main
+awscliv2.zip
+aws/
+go1.21.0.linux-amd64.tar.gz

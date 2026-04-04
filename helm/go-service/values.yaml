@@ -1,0 +1,22 @@
+replicaCount: 1
+
+image:
+  repository: 620057207037.dkr.ecr.ap-south-1.amazonaws.com/go-service
+  tag: v1.0.0
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8080
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+
+env:
+  PORT: "8080"
+  LOG_LEVEL: "info"
+
+imagePullSecrets:
+  - name: ecr-secret
