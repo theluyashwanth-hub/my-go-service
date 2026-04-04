@@ -1,0 +1,47 @@
+name: Release Pipeline
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push Docker image
+        env:
+          ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+          IMAGE_TAG: ${{ github.ref_name }}
+        run: |
+          docker build -t $ECR_REGISTRY/go-service:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/go-service:$IMAGE_TAG
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+
+      - name: Install helm-s3 plugin
+        run: helm plugin install https://github.com/hypnoglow/helm-s3.git
+
+      - name: Package and push Helm chart
+        env:
+          IMAGE_TAG: ${{ github.ref_name }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+        run: |
+          helm repo add my-repo s3://$S3_BUCKET/charts
+          sed -i "s/appVersion:.*/appVersion: \"$IMAGE_TAG\"/" helm/go-service/Chart.yaml
+          helm package helm/go-service/ --version $IMAGE_TAG
+          helm s3 push go-service-$IMAGE_TAG.tgz my-repo
