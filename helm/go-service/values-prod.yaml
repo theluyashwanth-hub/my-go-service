@@ -1,6 +1,8 @@
 replicaCount: 2
 image:
-  tag: v1.0.0
+  repository: 620057207037.dkr.ecr.ap-south-2.amazonaws.com/go-service
+  tag: v1.0.4
+  pullPolicy: Always
 resources:
   limits:
     cpu: 200m
