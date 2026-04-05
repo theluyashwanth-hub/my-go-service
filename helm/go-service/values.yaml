@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: 620057207037.dkr.ecr.ap-south-1.amazonaws.com/go-service
+  repository: 620057207037.dkr.ecr.ap-south-2.amazonaws.com/go-service
   tag: v1.0.0
   pullPolicy: Always
 
