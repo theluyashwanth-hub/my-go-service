@@ -8,7 +8,7 @@ import (
 
 func main() {
     http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-        fmt.Fprintln(w, "OK-v1.0.1 is running")
+        fmt.Fprintln(w, "OK-v1.1.1 is running")
     })
     port := os.Getenv("PORT")
     if port == "" {
